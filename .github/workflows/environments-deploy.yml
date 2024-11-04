@@ -1,0 +1,30 @@
+name: Environments Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set environment variables
+        id: set_env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/integration" ]]; then
+            echo "DEPLOY_STAGE=int" >> $GITHUB_ENV
+            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "DEPLOY_STAGE=staging" >> $GITHUB_ENV
+            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "DEPLOY_STAGE=develop" >> $GITHUB_ENV
+            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+          fi
+
+      - name: Echo Variables
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+         # Add your deployment commands here
+     
