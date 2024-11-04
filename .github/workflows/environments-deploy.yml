@@ -4,28 +4,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  set-environment-variables:
     runs-on: ubuntu-latest
-    environment: staging
     steps:
       - name: Set environment variables
-        id: set_env
+        id: set-env-vars
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/integration" ]]; then
-            echo "DEPLOY_STAGE=int" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=int" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            echo "DEPLOY_STAGE=staging" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
-            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=staging" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-            echo "DEPLOY_STAGE=develop" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
-            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=develop" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_OUTPUT
           fi
+    outputs:
+      DEPLOY_STAGE: ${{ steps.set-env-vars.outputs.DEPLOY_STAGE }}
+      ENVIRONMENT: ${{ steps.set-env-vars.outputs.ENVIRONMENT }}
+      CI_DEBUG_TRACE: ${{ steps.set-env-vars.outputs.CI_DEBUG_TRACE }}
 
-      - name: Echo Variables
+  dependency-a:
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: [set-environment-variables]  
+    steps:
+      - name: Deploy Project A
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
-         # Add your deployment commands here
+  
      
