@@ -6,7 +6,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: "staging"
+    environment: staging
     steps:
       - name: Set environment variables
         id: set_env
