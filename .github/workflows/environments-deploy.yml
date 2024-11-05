@@ -2,6 +2,24 @@ name: Environments Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      service-a:
+        description: 'Deploy Service A'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      service-b:
+        description: 'Deploy Service B'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+
 
 jobs:
   set-environment-variables:
@@ -58,7 +76,8 @@ jobs:
   service-a:
     runs-on: ubuntu-latest
     needs: [set-environment-variables, dependencies]
-    environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+    # environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+    if: ${{ github.event.inputs.service-a == 'true' }}
     steps:
       - name: Service A
         env:
