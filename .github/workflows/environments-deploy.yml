@@ -67,6 +67,19 @@ jobs:
           CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+          
+  service-b:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, dependencies]
+    environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+    steps:
+      - name: Service B
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
 
 
           
