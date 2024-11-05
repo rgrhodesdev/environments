@@ -61,11 +61,12 @@ jobs:
             echo "DEPLOY_ALL=true" >> $GITHUB_OUTPUT
           else
             echo "SERVICE_A_DEPLOY=${{ github.event.inputs.service-a }}" >> $GITHUB_OUTPUT
-            echo "SERVICE_B_DEPLOY=${{ github.event.inputs.service-a }}" >> $GITHUB_OUTPUT
+            echo "SERVICE_B_DEPLOY=${{ github.event.inputs.service-b }}" >> $GITHUB_OUTPUT
           fi
     outputs:
-      DEPLOY_ALL: ${{ steps.service-deploy.outputs.SERVICE_A_DEPLOY }}
+      DEPLOY_ALL: ${{ steps.service-deploy.outputs.DEPLOY_ALL }}
       SERVICE_A_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_A_DEPLOY }}
+      SERVICE_B_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_B_DEPLOY }}
 
   dependencies:
     runs-on: ubuntu-latest
