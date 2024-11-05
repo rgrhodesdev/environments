@@ -1,6 +1,9 @@
 name: Environments Deploy
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
     inputs:
       service-a:
