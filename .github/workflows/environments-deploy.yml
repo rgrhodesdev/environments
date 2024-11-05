@@ -82,7 +82,7 @@ jobs:
     # environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
     # if: ${{ github.event.inputs.service-a == 'true' }}
     steps:
-      - name: Service A
+      - name: Service A Deploy Check
         env:
           ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
           DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
@@ -93,6 +93,7 @@ jobs:
           else
             echo "DEPLOY=${{ github.event.inputs.service-a }}" >> $GITHUB_ENV
           fi
+          echo "Deploy Check = $DEPLOY for $ENVIRONMENT with stage: $DEPLOY_STAGE"
           
       - name: Deploy Service
         env:
