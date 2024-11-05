@@ -58,7 +58,7 @@ jobs:
   service-a:
     runs-on: ubuntu-latest
     environment: $DEPLOY_STAGE
-    needs: [dependencies]  
+    needs: [set-environment-variables, dependencies]  
     steps:
       - name: Service A
         env:
