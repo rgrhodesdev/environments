@@ -57,8 +57,8 @@ jobs:
 
   service-a:
     runs-on: ubuntu-latest
-    environment: ${{ steps.set-env-vars.outputs.DEPLOY_STAGE }}
-    needs: [set-environment-variables, dependencies]  
+    needs: [set-environment-variables, dependencies]
+    environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
     steps:
       - name: Service A
         env:
