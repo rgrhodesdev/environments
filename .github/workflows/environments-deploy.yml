@@ -27,17 +27,47 @@ jobs:
       ENVIRONMENT: ${{ steps.set-env-vars.outputs.ENVIRONMENT }}
       CI_DEBUG_TRACE: ${{ steps.set-env-vars.outputs.CI_DEBUG_TRACE }}
 
-  dependency-a:
+  dependencies:
     runs-on: ubuntu-latest
-    environment: staging
     needs: [set-environment-variables]  
     steps:
-      - name: Deploy Project A
+      - name: Dependency A
         env:
           ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
           DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
           CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
-  
+
+      - name: Dependency B
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+          
+      - name: Dependency C
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+
+  service-a:
+    runs-on: ubuntu-latest
+    environment: $DEPLOY_STAGE
+    needs: [dependencies]  
+    steps:
+      - name: Service A
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+
+
+          
      
