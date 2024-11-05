@@ -100,8 +100,9 @@ jobs:
           DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
           CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
         if: ${{ env.DEPLOY == 'true' }}
-        run: echo "Deploying to the environment..."
-        echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+        run: |
+          echo "Deploying to the environment..."
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
         
   service-b:
     runs-on: ubuntu-latest
