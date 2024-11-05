@@ -100,7 +100,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [set-environment-variables, dependencies]
     # environment: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
-    if: ${{ needs.services-to-deploy.outputs.DEPLOY_ALL == 'true' }} # ${{ needs.services-to-deploy.outputs.SERVICE_A_DEPLOY == 'true' }} ||
+    if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_A_DEPLOY == 'true') }}
+    #if: ${{ (matrix.coverage == true) && (runner.os == 'Linux') }}
+
     steps:
       - name: Deploy Service A
         env:
