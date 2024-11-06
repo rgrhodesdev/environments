@@ -63,7 +63,7 @@ jobs:
         env:
           DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
         run: |
-          if [[ "${{ env.DEPLOY_STAGE }}" == "develop" || "${{ env.DEPLOY_STAGE }}" == "integration" ]]; then
+          if [[ "${{ env.DEPLOY_STAGE }}" == "develop" || "${{ env.DEPLOY_STAGE }}" == "int" ]]; then
             echo "DEPLOY_ALL=true" >> $GITHUB_OUTPUT
           else
             echo "SERVICE_A_DEPLOY=${{ github.event.inputs.service-a }}" >> $GITHUB_OUTPUT
