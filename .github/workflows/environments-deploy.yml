@@ -1,30 +1,130 @@
 name: Environments Deploy
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
+    inputs:
+      service-a:
+        description: 'Deploy Service A'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
+      service-b:
+        description: 'Deploy Service B'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - true
+          - false
 
 jobs:
-  deploy:
+  set-environment-variables:
     runs-on: ubuntu-latest
     steps:
       - name: Set environment variables
-        id: set_env
+        id: set-env-vars
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/integration" ]]; then
-            echo "DEPLOY_STAGE=int" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=int" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            echo "DEPLOY_STAGE=staging" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
-            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=staging" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
-            echo "DEPLOY_STAGE=develop" >> $GITHUB_ENV
-            echo "ENVIRONMENT=NLV" >> $GITHUB_ENV
-            echo "CI_DEBUG_TRACE=true" >> $GITHUB_ENV
+            echo "DEPLOY_STAGE=develop" >> $GITHUB_OUTPUT
+            echo "ENVIRONMENT=NLV" >> $GITHUB_OUTPUT
+            echo "CI_DEBUG_TRACE=true" >> $GITHUB_OUTPUT
           fi
+    outputs:
+      DEPLOY_STAGE: ${{ steps.set-env-vars.outputs.DEPLOY_STAGE }}
+      ENVIRONMENT: ${{ steps.set-env-vars.outputs.ENVIRONMENT }}
+      CI_DEBUG_TRACE: ${{ steps.set-env-vars.outputs.CI_DEBUG_TRACE }}
 
-      - name: Echo Variables
+  services-to-deploy:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables]
+    steps:
+      - name: Parse Services to be deployed
+        id: service-deploy
+        env:
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+        run: |
+          if [[ "${{ env.DEPLOY_STAGE }}" == "develop" ]]; then
+            echo "DEPLOY_ALL=true" >> $GITHUB_OUTPUT
+          else
+            echo "SERVICE_A_DEPLOY=${{ github.event.inputs.service-a }}" >> $GITHUB_OUTPUT
+            echo "SERVICE_B_DEPLOY=${{ github.event.inputs.service-b }}" >> $GITHUB_OUTPUT
+          fi
+    outputs:
+      DEPLOY_ALL: ${{ steps.service-deploy.outputs.DEPLOY_ALL }}
+      SERVICE_A_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_A_DEPLOY }}
+      SERVICE_B_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_B_DEPLOY }}
+
+  dependencies:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, services-to-deploy]  
+    steps:
+      - name: Dependency A
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
-         # Add your deployment commands here
+
+      - name: Dependency B
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+          
+      - name: Dependency C
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+
+  service-a:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, dependencies]
+    if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_A_DEPLOY == 'true') }}
+    steps:
+      - name: Deploy Service A
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to the environment..."
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+
+  service-b:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, dependencies]
+    if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_B_DEPLOY == 'true') }}
+    steps:
+      - name: Deploy Service B
+        env:
+          ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          DEPLOY_STAGE: ${{needs.set-environment-variables.outputs.DEPLOY_STAGE}}
+          CI_DEBUG_TRACE: ${{needs.set-environment-variables.outputs.CI_DEBUG_TRACE}}
+        run: |
+          echo "Deploying to the environment..."
+          echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
+          
+
+
+
+          
      
