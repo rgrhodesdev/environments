@@ -72,7 +72,7 @@ jobs:
       SERVICE_A_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_A_DEPLOY }}
       SERVICE_B_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_B_DEPLOY }}
 
-  dependencies:
+  dependencies-a:
     runs-on: ubuntu-latest
     needs: [set-environment-variables, services-to-deploy]  
     steps:
@@ -84,6 +84,10 @@ jobs:
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
 
+  dependencies-b:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, services-to-deploy]  
+    steps:
       - name: Dependency B
         env:
           ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
@@ -92,6 +96,10 @@ jobs:
         run: |
           echo "Deploying to environment: $ENVIRONMENT with stage: $DEPLOY_STAGE"
           
+  dependencies-c:
+    runs-on: ubuntu-latest
+    needs: [set-environment-variables, services-to-deploy]  
+    steps:    
       - name: Dependency C
         env:
           ENVIRONMENT: ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
