@@ -71,7 +71,6 @@ jobs:
       DEPLOY_ALL: ${{ steps.service-deploy.outputs.DEPLOY_ALL }}
       SERVICE_A_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_A_DEPLOY }}
       SERVICE_B_DEPLOY: ${{ steps.service-deploy.outputs.SERVICE_B_DEPLOY }}
-
   
   service-a:
     runs-on: ubuntu-latest
