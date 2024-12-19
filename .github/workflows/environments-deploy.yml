@@ -76,7 +76,7 @@ jobs:
   service-a:
     runs-on: ubuntu-latest
     needs: [set-environment-variables]
-    #if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_A_DEPLOY == 'true') }}
+    if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_A_DEPLOY == 'true') }}
     steps:
 
       - name: Login NLV 
@@ -101,7 +101,7 @@ jobs:
   service-b:
     runs-on: ubuntu-latest
     needs: [set-environment-variables]
-    #if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_B_DEPLOY == 'true') }}
+    if: ${{ (needs.services-to-deploy.outputs.DEPLOY_ALL == 'true') || (needs.services-to-deploy.outputs.SERVICE_B_DEPLOY == 'true') }}
     steps:
     
       - name: Login NLV 
