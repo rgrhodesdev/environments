@@ -82,12 +82,12 @@ jobs:
       - name: Login NLV 
         if: ${{ needs.set-environment-variables.outputs.ENVIRONMENT == 'NLV' }}
         run: |  
-          echo "Logging into Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          echo "Logging into Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}"
 
       - name: Login PRD
         if: ${{ needs.set-environment-variables.outputs.ENVIRONMENT == 'PRD' }}
         run: |  
-          echo "Logging into Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          echo "Logging into Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}"
       
       - name: Deploy Service A
         env:
@@ -107,12 +107,12 @@ jobs:
       - name: Login NLV 
         if: ${{ needs.set-environment-variables.outputs.ENVIRONMENT == 'NLV' }}
         run: |  
-          echo "Logging onto Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          echo "Logging onto Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}"
 
       - name: Login PRD
         if: ${{ needs.set-environment-variables.outputs.ENVIRONMENT == 'PRD' }}
         run: |  
-          echo "Logging onto Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}
+          echo "Logging onto Environment - ${{needs.set-environment-variables.outputs.ENVIRONMENT}}"
           
       - name: Deploy Service B
         env:
